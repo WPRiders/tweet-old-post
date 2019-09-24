@@ -749,8 +749,7 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now,
-        fb_exception_toast: ropApiSettings.fb_domain_toast_display
+        publish_now: ropApiSettings.publish_now
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -823,6 +822,7 @@ exports.default = new _vuex2.default.Store({
                 case 'get_authenticated_services':
                 case 'remove_service':
                     state.authenticatedServices = stateData;
+                    state.hide_preloading++;
                     break;
                 case 'authenticate_service':
                     state.authenticatedServices = stateData;

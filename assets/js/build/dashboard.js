@@ -17736,8 +17736,9 @@ exports.default = new _vuex2.default.Store({
         activePostFormat: [],
         activeSchedule: [],
         queue: {},
-        publish_now: ropApiSettings.publish_now,
+        publish_now: ropApiSettings.publish_now
         fb_exception_toast: ropApiSettings.fb_domain_toast_display
+        hide_preloading: 0
     },
     mutations: {
         setTabView: function setTabView(state, view) {
@@ -17810,6 +17811,7 @@ exports.default = new _vuex2.default.Store({
                 case 'get_authenticated_services':
                 case 'remove_service':
                     state.authenticatedServices = stateData;
+                    state.hide_preloading++;
                     break;
                 case 'authenticate_service':
                     state.authenticatedServices = stateData;
@@ -34767,7 +34769,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-93242342] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-93242342] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-93242342] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .text-gray b[_v-93242342] {\n\t\tdisplay: inline;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-93242342] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t#rop_core .rop-available-accounts h5[_v-93242342] {\n\t\tmargin-bottom: 15px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-93242342] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-93242342] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
+exports.push([module.i, "\n\t#rop_core .columns.py-2 .text-gray[_v-2ff296d6] {\n\t\tmargin: 0;\n\t\tline-height: normal;\n\t}\n\n\t#rop_core .input-group[_v-2ff296d6] {\n\t\twidth: 100%;\n\t}\n\n\tb[_v-2ff296d6] {\n\t\tmargin-bottom: 5px;\n\t\tdisplay: block;\n\t}\n\n\t#rop_core .text-gray b[_v-2ff296d6] {\n\t\tdisplay: inline;\n\t}\n\n\t#rop_core .input-group .input-group-addon[_v-2ff296d6] {\n\t\tpadding: 3px 5px;\n\t}\n\n\t#rop_core .rop-available-accounts h5[_v-2ff296d6] {\n\t\tmargin-bottom: 15px;\n\t}\n\n\t@media ( max-width: 600px ) {\n\t\t#rop_core .panel-body .text-gray[_v-2ff296d6] {\n\t\t\tmargin-bottom: 10px;\n\t\t}\n\n\t\t#rop_core .text-right[_v-2ff296d6] {\n\t\t\ttext-align: left;\n\t\t}\n\t}\n", ""]);
 
 // exports
 
@@ -34795,193 +34797,214 @@ var _addAccountTile = __webpack_require__(232);
 
 var _addAccountTile2 = _interopRequireDefault(_addAccountTile);
 
+var _vueSpinner = __webpack_require__(319);
+
+var _vueSpinner2 = _interopRequireDefault(_vueSpinner);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = {
-	name: 'account-view',
-	data: function data() {
-		return {
-			addAccountActive: false,
-			accountsCount: 0,
-			is_loading: false,
-			twitter_warning: false,
-			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link,
-			pro_installed: ropApiSettings.pro_installed
-		};
-	},
-	computed: {
-		/**
-   * Get all the available/active accounts.
-   */
-		accounts: function accounts() {
-			var all_accounts = {};
-			var twitter = 0;
-			var services = this.$store.state.authenticatedServices;
-			for (var key in services) {
-				if (!services.hasOwnProperty(key)) {
-					continue;
-				}
-				var service = services[key];
-				for (var account_id in service.available_accounts) {
-					if (!service.available_accounts.hasOwnProperty(account_id)) {
-						continue;
-					}
-					all_accounts[account_id] = service.available_accounts[account_id];
-					if (service.service === 'twitter') {
-						twitter += (0, _keys2.default)(service.available_accounts).length;
-					}
-				}
-			}
-			this.twitter_warning = twitter > 1;
-			this.$log.info('All accounts: ', all_accounts);
-			this.accountsCount = (0, _keys2.default)(all_accounts).length;
-			return all_accounts;
-		},
-		/**
-   * Check if we have a pro license.
-   * @returns {boolean}
-   */
-		checkLicense: function checkLicense() {
-			return this.$store.state.licence < 1;
-		}
-	},
-
-	methods: {
-		resetAccountData: function resetAccountData() {
-			var _this = this;
-
-			if (this.is_loading) {
-				this.$log.warn('Request in progress...Bail');
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'reset_accounts',
-				data: {}
-			}).then(function (response) {
-				_this.is_loading = false;
-				if (_this.$parent.start_status === true) {
-					// Stop sharing process if enabled.
-					_this.$parent.togglePosting();
-				}
-				_this.$store.dispatch('fetchAJAXPromise', {
-					req: 'get_available_services'
-				}).then(function (response) {
-					_this.is_loading = false;
-				});
-			}, function (error) {
-				_this.is_loading = false;
-				Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		}
-	},
-	components: {
-		SignInBtn: _signInBtn2.default,
-		ServiceUserTile: _serviceUserTile2.default,
-		AddAccountTile: _addAccountTile2.default
-	}
-	// </script>
-	// <style scoped>
-	// 	#rop_core .columns.py-2 .text-gray {
-	// 		margin: 0;
-	// 		line-height: normal;
-	// 	}
-	//
-	// 	#rop_core .input-group {
-	// 		width: 100%;
-	// 	}
-	//
-	// 	b {
-	// 		margin-bottom: 5px;
-	// 		display: block;
-	// 	}
-	//
-	// 	#rop_core .text-gray b {
-	// 		display: inline;
-	// 	}
-	//
-	// 	#rop_core .input-group .input-group-addon {
-	// 		padding: 3px 5px;
-	// 	}
-	//
-	// 	#rop_core .rop-available-accounts h5 {
-	// 		margin-bottom: 15px;
-	// 	}
-	//
-	// 	@media ( max-width: 600px ) {
-	// 		#rop_core .panel-body .text-gray {
-	// 			margin-bottom: 10px;
-	// 		}
-	//
-	// 		#rop_core .text-right {
-	// 			text-align: left;
-	// 		}
-	// 	}
-	// </style>
-	//
-
-}; // <template>
-// 	<div class="tab-view">
-// 		<div class="panel-body">
-// 			<div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
+// <template>
+//     <div class="tab-view">
+//         <div class="panel-body">
+//             <div class="toast  toast-warning" v-html="labels.twitter_warning" v-if="twitter_warning">
 //
-// 			</div>
-// 			<div class="container">
-// 				<div class="columns" :class="'rop-tab-state-'+is_loading">
-// 					<div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
-// 						<div class="empty mb-2" v-if="accountsCount === 0">
-// 							<div class="empty-icon">
-// 								<i class="fa fa-3x fa-user-circle-o"></i>
-// 							</div>
-// 							<p class="empty-title h5">{{labels.no_accounts}}</p>
-// 							<p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
-// 							<p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
-// 						</div>
-// 						<div class="account-container" v-for="( account, id ) in accounts">
-// 							<service-user-tile :account_data="account" :account_id="id"></service-user-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 						<div class="add-accounts">
-// 							<add-account-tile></add-account-tile>
-// 							<span class="divider"></span>
-// 						</div>
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<div class="panel-footer">
-// 				<div class="columns my-2" v-if="checkLicense && pro_installed">
-// 					<div class="column col-12">
-// 							<i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
-// 					</div>
-// 				</div>
-// 				<div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
-// 					<div class="column col-12">
-// 						<p class="upsell">
-// 							<i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
-// 						</p>
-// 					</div>
-// 				</div>
-// 				<div class="columns" v-if="accountsCount < 1">
-// 					<div class="column col-12">
-// 						<p><i class="fa fa-info-circle"></i> <span
-// 								v-html="labels.has_accounts_desc"></span></p>
-// 					</div>
-// 				</div>
-// 				<div class="column col-12 text-right">
-// 					<button class="btn btn-secondary" @click="resetAccountData()">
-// 						<i class="fa fa-ban" v-if="!this.is_loading"></i>
-// 						<i class="fa fa-spinner fa-spin" v-else></i>
-// 						{{labels.remove_all_cta}}
-// 					</button>
-// 				</div>
-// 			</div>
-// 		</div>
+//             </div>
+//             <div class="container">
+//                 <div class="columns" :class="'rop-tab-state-'+is_loading">
+//                     <div class="column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2">
+//                         <vue_spinner :preloader_message="labels.preloader_message_accounts" ref="Preloader" v-if="is_preloading === 0"></vue_spinner>
+//                         <div class="empty mb-2" v-if="accountsCount === 0 && is_preloading > 0">
+//                             <div class="empty-icon">
+//                                 <i class="fa fa-3x fa-user-circle-o"></i>
+//                             </div>
+//                             <p class="empty-title h5">{{labels.no_accounts}}</p>
+//                             <p class="empty-subtitle">{{labels.no_accounts_desc}}</p>
+//                             <p class="empty-subtitle"><span v-html="labels.no_accounts_pro_upsell"></span></p>
+//                         </div>
+//                         <div class="account-container" v-for="( account, id ) in accounts" v-if="is_preloading > 0">
+//                             <service-user-tile :account_data="account" :account_id="id"></service-user-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                         <div class="add-accounts">
+//                             <add-account-tile></add-account-tile>
+//                             <span class="divider"></span>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <div class="panel-footer">
+//                 <div class="columns my-2" v-if="checkLicense && pro_installed">
+//                     <div class="column col-12">
+//                         <i class="fa fa-lock "></i> <span v-html="labels.activate_license"></span>
+//                     </div>
+//                 </div>
+//                 <div class="columns my-2" v-if="(checkLicense && accountsCount === 2) && !pro_installed">
+//                     <div class="column col-12">
+//                         <p class="upsell">
+//                             <i class="fa fa-lock "></i> <span v-html="labels.upsell_accounts"></span>
+//                         </p>
+//                     </div>
+//                 </div>
+//                 <div class="columns" v-if="accountsCount < 1">
+//                     <div class="column col-12">
+//                         <p><i class="fa fa-info-circle"></i> <span
+//                                 v-html="labels.has_accounts_desc"></span></p>
+//                     </div>
+//                 </div>
+//                 <div class="column col-12 text-right">
+//                     <button class="btn btn-secondary" @click="resetAccountData()">
+//                         <i class="fa fa-ban" v-if="!this.is_loading"></i>
+//                         <i class="fa fa-spinner fa-spin" v-else></i>
+//                         {{labels.remove_all_cta}}
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
 //
-// 	</div>
+//     </div>
 // </template>
 //
 // <script>
+module.exports = {
+    name: 'account-view',
+    data: function data() {
+        return {
+            addAccountActive: false,
+            accountsCount: 0,
+            is_loading: false,
+            twitter_warning: false,
+            labels: this.$store.state.labels.accounts,
+            upsell_link: ropApiSettings.upsell_link,
+            pro_installed: ropApiSettings.pro_installed,
+            is_preloading: this.$store.state.hide_preloading
+        };
+    },
+    mounted: function mounted() {
+        if (0 === this.is_preloading) {
+            this.page_loader_module_display();
+        }
+    },
+    computed: {
+        /**
+         * Get all the available/active accounts.
+         */
+        accounts: function accounts() {
+            var all_accounts = {};
+            var twitter = 0;
+            var services = this.$store.state.authenticatedServices;
+            for (var key in services) {
+                if (!services.hasOwnProperty(key)) {
+                    continue;
+                }
+                var service = services[key];
+                for (var account_id in service.available_accounts) {
+                    if (!service.available_accounts.hasOwnProperty(account_id)) {
+                        continue;
+                    }
+                    all_accounts[account_id] = service.available_accounts[account_id];
+                    if (service.service === 'twitter') {
+                        twitter += (0, _keys2.default)(service.available_accounts).length;
+                    }
+                }
+            }
+            this.twitter_warning = twitter > 1;
+            this.$log.info('All accounts: ', all_accounts);
+            this.$log.debug('Preloading: ', this.$store.state.hide_preloading);
+            this.accountsCount = (0, _keys2.default)(all_accounts).length;
+            this.is_preloading = this.$store.state.hide_preloading;
+            return all_accounts;
+        },
+        /**
+         * Check if we have a pro license.
+         * @returns {boolean}
+         */
+        checkLicense: function checkLicense() {
+            return this.$store.state.licence < 1;
+        }
+    },
+
+    methods: {
+        page_loader_module_display: function page_loader_module_display() {
+            // Display the preloader until accounts are loaded.
+            //this.$refs.Preloader.preloader_message = this.$store.state.labels.accounts.preloader_message;
+            this.$refs.Preloader.show();
+        },
+
+        resetAccountData: function resetAccountData() {
+            var _this = this;
+
+            if (this.is_loading) {
+                this.$log.warn('Request in progress...Bail');
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'reset_accounts',
+                data: {}
+            }).then(function (response) {
+                _this.is_loading = false;
+                if (_this.$parent.start_status === true) {
+                    // Stop sharing process if enabled.
+                    _this.$parent.togglePosting();
+                }
+                _this.$store.dispatch('fetchAJAXPromise', {
+                    req: 'get_available_services'
+                }).then(function (response) {
+                    _this.is_loading = false;
+                });
+            }, function (error) {
+                _this.is_loading = false;
+                Vue.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        }
+    },
+    components: {
+        SignInBtn: _signInBtn2.default,
+        ServiceUserTile: _serviceUserTile2.default,
+        AddAccountTile: _addAccountTile2.default,
+        'vue_spinner': _vueSpinner2.default
+    }
+    // </script>
+    // <style scoped>
+    //     #rop_core .columns.py-2 .text-gray {
+    //         margin: 0;
+    //         line-height: normal;
+    //     }
+    //
+    //     #rop_core .input-group {
+    //         width: 100%;
+    //     }
+    //
+    //     b {
+    //         margin-bottom: 5px;
+    //         display: block;
+    //     }
+    //
+    //     #rop_core .text-gray b {
+    //         display: inline;
+    //     }
+    //
+    //     #rop_core .input-group .input-group-addon {
+    //         padding: 3px 5px;
+    //     }
+    //
+    //     #rop_core .rop-available-accounts h5 {
+    //         margin-bottom: 15px;
+    //     }
+    //
+    //     @media ( max-width: 600px ) {
+    //         #rop_core .panel-body .text-gray {
+    //             margin-bottom: 10px;
+    //         }
+    //
+    //         #rop_core .text-right {
+    //             text-align: left;
+    //         }
+    //     }
+    // </style>
+    //
+
+};
 
 /***/ }),
 /* 223 */
@@ -35902,7 +35925,7 @@ module.exports = "\n\t<div _v-6d45b7fb=\"\">\n\t\t<div class=\"tile-content\" _v
 /* 237 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tab-view\" _v-93242342=\"\">\n\t\t<div class=\"panel-body\" _v-93242342=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-93242342=\"\">\n\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-93242342=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-93242342=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-93242342=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-93242342=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-93242342=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-93242342=\"\"><span v-html=\"labels.no_accounts_pro_upsell\" _v-93242342=\"\"></span></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-93242342=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-93242342=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" _v-93242342=\"\">\n\t\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-93242342=\"\"></i> <span v-html=\"labels.activate_license\" _v-93242342=\"\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-93242342=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-93242342=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-93242342=\"\"></span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"accountsCount < 1\" _v-93242342=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-93242342=\"\">\n\t\t\t\t\t\t<p _v-93242342=\"\"><i class=\"fa fa-info-circle\" _v-93242342=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-93242342=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-93242342=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-93242342=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-93242342=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
+module.exports = "\n\t<div class=\"tab-view\" _v-2ff296d6=\"\">\n\t\t<div class=\"panel-body\" _v-2ff296d6=\"\">\n\t\t\t<div class=\"toast  toast-warning\" v-html=\"labels.twitter_warning\" v-if=\"twitter_warning\" _v-2ff296d6=\"\">\n\n\t\t\t</div>\n\t\t\t<div class=\"container\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns\" :class=\"'rop-tab-state-'+is_loading\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-sm-12 col-md-12 col-lg-12 text-left rop-available-accounts mt-2\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<div class=\"empty mb-2\" v-if=\"accountsCount === 0\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<div class=\"empty-icon\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t\t<i class=\"fa fa-3x fa-user-circle-o\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<p class=\"empty-title h5\" _v-2ff296d6=\"\">{{labels.no_accounts}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\">{{labels.no_accounts_desc}}</p>\n\t\t\t\t\t\t\t<p class=\"empty-subtitle\" _v-2ff296d6=\"\"><span v-html=\"labels.no_accounts_pro_upsell\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"account-container\" v-for=\"( account, id ) in accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<service-user-tile :account_data=\"account\" :account_id=\"id\" _v-2ff296d6=\"\"></service-user-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"add-accounts\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<add-account-tile _v-2ff296d6=\"\"></add-account-tile>\n\t\t\t\t\t\t\t<span class=\"divider\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"panel-footer\" _v-2ff296d6=\"\">\n\t\t\t\t<div class=\"columns my-2\" v-if=\"checkLicense &amp;&amp; pro_installed\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.activate_license\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns my-2\" v-if=\"(checkLicense &amp;&amp; accountsCount === 2) &amp;&amp; !pro_installed\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p class=\"upsell\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t\t<i class=\"fa fa-lock \" _v-2ff296d6=\"\"></i> <span v-html=\"labels.upsell_accounts\" _v-2ff296d6=\"\"></span>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"columns\" v-if=\"accountsCount < 1\" _v-2ff296d6=\"\">\n\t\t\t\t\t<div class=\"column col-12\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<p _v-2ff296d6=\"\"><i class=\"fa fa-info-circle\" _v-2ff296d6=\"\"></i> <span v-html=\"labels.has_accounts_desc\" _v-2ff296d6=\"\"></span></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"column col-12 text-right\" _v-2ff296d6=\"\">\n\t\t\t\t\t<button class=\"btn btn-secondary\" @click=\"resetAccountData()\" _v-2ff296d6=\"\">\n\t\t\t\t\t\t<i class=\"fa fa-ban\" v-if=\"!this.is_loading\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-2ff296d6=\"\"></i>\n\t\t\t\t\t\t{{labels.remove_all_cta}}\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n";
 
 /***/ }),
 /* 238 */
@@ -41338,6 +41361,457 @@ module.exports = "\n\t<div class=\"toast toast-success rop-current-time\" v-if=\
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <div class=\"columns panel-header\">\n            <div class=\"column header-logo vertical-align\">\n                <div>\n                    <img :src=\"plugin_logo\" class=\"plugin-logo avatar avatar-lg\"/>\n                    <h1 class=\"plugin-title d-inline-block\">Revive Old Posts</h1><span class=\"powered d-inline-block\"> {{labels.by}} <a\n                        href=\"https://revive.social\" target=\"_blank\"><b>Revive.Social</b></a></span>\n                    <div id=\"rop_user_actions\">\n                        <a v-if=\"license  >= 1\" href=\"https://revive.social/pro-support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"license  < 1\" href=\"https://revive.social/support/\" target=\"_blank\" class=\"rop-get-support-btn\"><span><i\n                                class=\"fa fa-commenting\" aria-hidden=\"true\"></i></span> {{labels.rop_support}}</a>\n                        <a v-if=\"haveAccounts\"\n                           href=\"https://docs.revive.social/\"\n                           target=\"_blank\" class=\"rop-docs-btn\"><span><i class=\"fa fa-book\" aria-hidden=\"true\"></i></span> {{labels.rop_docs}}</a>\n                        <a v-if=\"haveAccounts\" href=\"https://wordpress.org/support/plugin/tweet-old-post/reviews/#new-post\" target=\"_blank\" class=\"leave-a-review\"><span><i class=\"fa fa-star\"\n                                                                                                                                                                            aria-hidden=\"true\"></i></span>\n                            {{labels.review_it}}</a>\n                    </div>\n                </div>\n            </div>\n            <toast/>\n            <div v-if=\" is_rest_api_error \" class=\"toast toast-error rop-api-not-available\" v-html=\"labels.api_not_available\">\n            </div>\n\n            <div class=\"sidebar sidebar-top card rop-container-start\">\n                <div class=\"toast rop-current-time\" v-if=\"formatedDate\">\n                    {{labels.now}}: {{ formatedDate }}\n                </div>\n                <countdown :current_time=\"current_time\"/>\n                <button class=\"btn btn-sm\" :class=\"btn_class\"\n                        :data-tooltip=\"labels.active_account_warning\"\n                        @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                    <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                    <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                    <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                    {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                </button>\n            </div>\n        </div>\n\n        <div class=\"columns\">\n            <div class=\"panel column col-9 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12\">\n                <div class=\"panel-nav\" style=\"padding: 8px;\">\n                    <ul class=\"tab \">\n                        <li class=\"tab-item c-hand\" v-for=\"tab in displayTabs\"\n                            :class=\"{ active: tab.isActive }\" v-bind:id=\"tab.name.replace(' ', '').toLowerCase()\">\n                            <a :class=\" ( tab.slug === 'logs' && logs_no > 0  )  ? ' badge-logs badge' : '' \"\n                               :data-badge=\"logs_no\"\n                               @click=\"switchTab( tab.slug )\">{{ tab.name }}</a>\n                        </li>\n                    </ul>\n                </div>\n                <component :is=\"page.template\" :type=\"page.view\"></component>\n            </div>\n\n            <div class=\"sidebar column col-3 col-xs-12 col-sm-12  col-md-12 col-lg-12\"\n                 :class=\"'rop-license-plan-'+license\">\n\n                <div class=\"card rop-container-start\">\n                    <div class=\"toast rop-current-time\" v-if=\"formatedDate && haveAccounts\">\n                        {{labels.now}}: {{ formatedDate }}\n                    </div>\n                    <countdown :current_time=\"current_time\"/>\n                    <button id=\"rop_start_stop_btn\" class=\"btn\" :class=\"btn_class\"\n                            :data-tooltip=\"labels.active_account_warning\"\n                            @click=\"togglePosting()\" :disabled=\"!haveAccountsActive\">\n                        <i class=\"fa fa-play\" v-if=\"!is_loading && !start_status\"></i>\n                        <i class=\"fa fa-stop\" v-else-if=\"!is_loading && start_status\"></i>\n                        <i class=\"fa fa-spinner fa-spin\" v-else></i>\n                        {{( start_status ? labels.stop : labels.start )}} {{labels.sharing}}\n                    </button>\n                    <div id=\"staging-status\" v-if=\"staging\">\n                        {{labels.staging_status}}\n                    </div>\n                    <div v-if=\"!haveAccounts\" class=\"rop-spacer\"></div>\n                    <div v-if=\"haveAccounts\">\n                        <upsell-sidebar></upsell-sidebar>\n                    </div>\n                    <a v-if=\"haveAccounts\" href=\"https://trello.com/b/svAZqXO1/roadmap-revive-old-posts\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.rop_roadmap}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://docs.google.com/forms/d/e/1FAIpQLSdxYonOXjV9kOYICu1Wo7CK6uaKefUFkzbd_w9YfQDbl193Og/viewform\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.survey}}</a>\n                    <a v-if=\"haveAccounts\" href=\"https://twitter.com/intent/tweet?text=Keep%20your%20content%20fresh%2C%20share%20it%20on%20autopilot%20&url=http%3A%2F%2Frevive.social%2Fplugins%2Frevive-old-post%2F&via=ReviveSocial\" target=\"_blank\" class=\"btn rop-sidebar-action-btns\">{{labels.tweet_about_it}}</a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(320)
+__vue_script__ = __webpack_require__(322)
+__vue_template__ = __webpack_require__(323)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/vue-spinner.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(321);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-8b660b3e&file=vue-spinner.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./vue-spinner.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 321 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n    .preloader-container[_v-8b660b3e] {\n        position: relative;\n        z-index: 9998;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        margin: auto;\n        width: 100%;\n        height: 218px;\n        background-color: rgba(255, 255, 255, 0.1);\n        display: block;\n    }\n\n    .preloader-body[_v-8b660b3e] {\n        width: 350px;\n        height: 80px;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        margin: auto;\n        text-align: center;\n        display: block;\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _preload_three_dots = __webpack_require__(394);
+
+var _preload_three_dots2 = _interopRequireDefault(_preload_three_dots);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var style_components = {
+    'loader-style': _preload_three_dots2.default
+}; // <template>
+//     <transition v-if="display_the_preloader">
+//         <div class="preloader-container">
+//             <div class="preloader-body text-center">
+//                 <p class="empty-title h5" v-html="loading_message"></p>
+//                 <component v-bind:is="spinner_style" :loading="loading" :color="color" :size="size" :margin="margin" :radius="radius"></component>
+//             </div>
+//         </div>
+//     </transition>
+// </template>
+//
+// <script>
+
+exports.default = {
+    name: "vue-spinner",
+    mounted: function mounted() {},
+
+    props: {
+        spinner_style: {
+            type: String,
+            default: 'loader-style'
+        },
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#429bf4'
+        },
+        size: {
+            type: String,
+            default: '30px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        },
+        preloader_message: {
+            type: String,
+            default: 'Loading...'
+        }
+    },
+    data: function data() {
+        return {
+            display_the_preloader: false,
+            loading_message: this.preloader_message
+        };
+    },
+
+    components: style_components,
+    methods: {
+        show: function show() {
+            this.display_the_preloader = true;
+        },
+        hide: function hide() {
+            this.display_the_preloader = false;
+        }
+    }
+    // </script>
+    //
+    // <style scoped>
+    //     .preloader-container {
+    //         position: relative;
+    //         z-index: 9998;
+    //         top: 0;
+    //         left: 0;
+    //         right: 0;
+    //         bottom: 0;
+    //         margin: auto;
+    //         width: 100%;
+    //         height: 218px;
+    //         background-color: rgba(255, 255, 255, 0.1);
+    //         display: block;
+    //     }
+    //
+    //     .preloader-body {
+    //         width: 350px;
+    //         height: 80px;
+    //         position: absolute;
+    //         top: 0;
+    //         bottom: 0;
+    //         left: 0;
+    //         right: 0;
+    //         margin: auto;
+    //         text-align: center;
+    //         display: block;
+    //     }
+    // </style>
+
+};
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <transition v-if=\"display_the_preloader\" _v-8b660b3e=\"\">\n        <div class=\"preloader-container\" _v-8b660b3e=\"\">\n            <div class=\"preloader-body text-center\" _v-8b660b3e=\"\">\n                <p class=\"empty-title h5\" v-html=\"loading_message\" _v-8b660b3e=\"\"></p>\n                <component v-bind:is=\"spinner_style\" :loading=\"loading\" :color=\"color\" :size=\"size\" :margin=\"margin\" :radius=\"radius\" _v-8b660b3e=\"\"></component>\n            </div>\n        </div>\n    </transition>\n";
+
+/***/ }),
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */,
+/* 331 */,
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */,
+/* 337 */,
+/* 338 */,
+/* 339 */,
+/* 340 */,
+/* 341 */,
+/* 342 */,
+/* 343 */,
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(399)
+__vue_script__ = __webpack_require__(397)
+__vue_template__ = __webpack_require__(401)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/preload_three_dots.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 395 */,
+/* 396 */,
+/* 397 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template>
+//     <div class="preloader-loading-item" v-show="loading">
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-even" v-bind:style="dot_style"></div>
+//         <div class="normal-dot normal-dot-odd" v-bind:style="dot_style"></div>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+
+    name: 'preload_three_dots',
+
+    props: {
+        loading: {
+            type: Boolean,
+            default: true
+        },
+        color: {
+            type: String,
+            default: '#5dc596'
+        },
+        size: {
+            type: String,
+            default: '15px'
+        },
+        margin: {
+            type: String,
+            default: '2px'
+        },
+        radius: {
+            type: String,
+            default: '100%'
+        }
+    },
+    data: function data() {
+        return {
+            dot_style: {
+                backgroundColor: this.color,
+                height: this.size,
+                width: this.size,
+                margin: this.margin,
+                borderRadius: this.radius
+            }
+        };
+    }
+};
+// </script>
+//
+// <style scoped>
+//
+//     .preloader-loading-item .normal-dot {
+//         -webkit-animation: dot-do-animation 0.7s infinite linear;
+//         animation: dot-do-animation 0.7s infinite linear;
+//         -webkit-animation-fill-mode: both;
+//         animation-fill-mode: both;
+//         display: inline-block;
+//     }
+//
+//     .preloader-loading-item .normal-dot-odd {
+//         animation-delay: 0s;
+//     }
+//
+//     .preloader-loading-item .normal-dot-even {
+//         animation-delay: 0.50s;
+//     }
+//
+//     @-webkit-keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+//
+//     @keyframes dot-do-animation {
+//         50% {
+//             -webkit-transform: scale(0.75);
+//             transform: scale(0.75);
+//             -webkit-opacity: 0.2;
+//             opacity: 0.2;
+//         }
+//         100% {
+//             -webkit-transform: scale(1);
+//             transform: scale(1);
+//             -webkit-opacity: 1;
+//             opacity: 1;
+//         }
+//     }
+// </style>
+
+/***/ }),
+/* 398 */,
+/* 399 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(400);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3856defc&file=preload_three_dots.vue&scoped=true!../../../../node_modules/vue-loader/lib/selector.js?type=style&index=0!../../../../node_modules/eslint-loader/index.js!../../../../node_modules/eslint-loader/index.js!./preload_three_dots.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 400 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)();
+// imports
+
+
+// module
+exports.push([module.i, "\n\n    .preloader-loading-item .normal-dot[_v-3856defc] {\n        animation: dot-do-animation 0.7s infinite linear;\n        animation-fill-mode: both;\n        display: inline-block;\n    }\n\n    .preloader-loading-item .normal-dot-odd[_v-3856defc] {\n        animation-delay: 0s;\n    }\n\n    .preloader-loading-item .normal-dot-even[_v-3856defc] {\n        animation-delay: 0.50s;\n    }\n\n    @keyframes dot-do-animation {\n        50% {\n            transform: scale(0.75);\n            -webkit-opacity: 0.2;\n            opacity: 0.2;\n        }\n        100% {\n            transform: scale(1);\n            -webkit-opacity: 1;\n            opacity: 1;\n        }\n    }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 401 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"preloader-loading-item\" v-show=\"loading\" _v-3856defc=\"\">\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-even\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n        <div class=\"normal-dot normal-dot-odd\" v-bind:style=\"dot_style\" _v-3856defc=\"\"></div>\n    </div>\n";
 
 /***/ })
 /******/ ]);
