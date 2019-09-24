@@ -14,7 +14,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-$settings = get_option( 'rop_data' );
+$settings     = get_option( 'rop_data' );
 $housekeeping = $settings['general_settings']['housekeeping'];
 
 if ( isset( $housekeeping ) && $housekeeping ) {
