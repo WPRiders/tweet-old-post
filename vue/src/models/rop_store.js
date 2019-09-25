@@ -92,7 +92,7 @@ export default new Vuex.Store({
         activeSchedule: [],
         queue: {},
         publish_now: ropApiSettings.publish_now,
-        hide_preloading : 0
+        hide_preloading : 0,
         fb_exception_toast: ropApiSettings.fb_domain_toast_display
     },
     mutations: {
