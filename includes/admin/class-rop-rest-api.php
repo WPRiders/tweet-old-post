@@ -172,7 +172,7 @@ class Rop_Rest_Api {
 	private function get_queue( $data ) {
 		$queue = new Rop_Queue_Model();
 
-		if ( isset( $data['force'] ) && true === (bool) $data['force'] ) {
+		if ( isset( $data['force'] ) && true === filter_var( $data['force'], FILTER_VALIDATE_BOOLEAN ) ) {
 			$queue->clear_queue();
 		}
 		$this->response->set_code( '200' )
@@ -1019,16 +1019,16 @@ class Rop_Rest_Api {
 	 * @return  array
 	 */
 	private function add_account_li( $data ) {
-		$services        = array();
-		$active_accounts = array();
+		$services         = array();
+		$active_accounts  = array();
 		$linkedin_service = new Rop_Linkedin_Service();
-		$model           = new Rop_Services_Model();
-		$db              = new Rop_Db_Upgrade();
+		$model            = new Rop_Services_Model();
+		$db               = new Rop_Db_Upgrade();
 
 		$linkedin_service->add_account_with_app( $data );
 
 		$services[ $linkedin_service->get_service_id() ] = $linkedin_service->get_service();
-		$active_accounts                                = array_merge( $active_accounts, $linkedin_service->get_service_active_accounts() );
+		$active_accounts                                 = array_merge( $active_accounts, $linkedin_service->get_service_active_accounts() );
 
 		if ( ! empty( $services ) ) {
 			$model->add_authenticated_service( $services );
@@ -1073,14 +1073,14 @@ class Rop_Rest_Api {
 	private function add_account_buffer( $data ) {
 		$services        = array();
 		$active_accounts = array();
-		$buffer_service = new Rop_Buffer_Service();
+		$buffer_service  = new Rop_Buffer_Service();
 		$model           = new Rop_Services_Model();
 		$db              = new Rop_Db_Upgrade();
 
 		$buffer_service->add_account_with_app( $data );
 
 		$services[ $buffer_service->get_service_id() ] = $buffer_service->get_service();
-		$active_accounts                                = array_merge( $active_accounts, $buffer_service->get_service_active_accounts() );
+		$active_accounts                               = array_merge( $active_accounts, $buffer_service->get_service_active_accounts() );
 
 		if ( ! empty( $services ) ) {
 			$model->add_authenticated_service( $services );

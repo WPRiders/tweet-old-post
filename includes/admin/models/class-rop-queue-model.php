@@ -259,6 +259,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function get_ordered_queue() {
+
 		$cron_helper = new Rop_Cron_Helper();
 		/**
 		 * Bail if the sharing is not started.
@@ -281,6 +282,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					if ( Rop_Scheduler_Model::get_current_time() > $events_posts['time'] ) {
 						continue;
 					}
+
 					$ordered[] = array(
 						'time'      => $events_posts['time'],
 						'post_data' => array(
@@ -288,7 +290,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 							'account_id' => $account_id,
 							'date'       => Rop_Scheduler_Model::get_date( $events_posts['time'] ),
 							'post_id'    => $post_id,
-							'content'    => $this->prepare_post_object( $post_id, $account_id ),
+							'content'    => $this->prepare_post_object( $post_id, $account_id, false ),
 						),
 						'post_id'   => $post_id,
 					);
@@ -312,17 +314,17 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 * @return array
 	 */
 	public function build_queue_publish_now() {
-		$selector           = new Rop_Posts_Selector_Model();
-		$posts              = $selector->get_publish_now_posts();
+		$selector = new Rop_Posts_Selector_Model();
+		$posts    = $selector->get_publish_now_posts();
 
-		$normalized_queue   = array();
+		$normalized_queue = array();
 		if ( ! $posts ) {
 			return $normalized_queue;
 		}
 
-		$index              = 0;
+		$index = 0;
 		foreach ( $posts as $post_id ) {
-			$accounts   = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
+			$accounts = get_post_meta( $post_id, 'rop_publish_now_accounts', true );
 			if ( ! $accounts ) {
 				continue;
 			}
@@ -335,7 +337,7 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 					'posts' => array( $post_id ),
 				);
 			}
-			$index++;
+			$index ++;
 		}
 
 		return $normalized_queue;
@@ -378,14 +380,18 @@ class Rop_Queue_Model extends Rop_Model_Abstract {
 	 *
 	 * @param   integer $post_id A WordPress Post Object.
 	 * @param   string  $account_id The account ID.
+	 * @param   bool    $increment_variations Whether to increment variation number or not..
 	 *
 	 * @return array
 	 */
-	public function prepare_post_object( $post_id, $account_id ) {
+	public function prepare_post_object( $post_id, $account_id, $increment_variations = true ) {
 		$post_format_helper = new Rop_Post_Format_Helper();
+
+		$post_format_helper->variation_increment_save_status( $increment_variations );
+
 		$post_format_helper->set_post_format( $account_id );
 		$filtered_post = $post_format_helper->get_formated_object( $post_id );
-
+		// error_log( '$filtered_post ' . wp_json_encode( $filtered_post ) );
 		return $filtered_post;
 	}
 

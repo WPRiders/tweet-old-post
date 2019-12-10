@@ -19,6 +19,15 @@
  * @link    https://themeisle.com/
  */
 class Rop_Post_Format_Helper {
+	/**
+	 * Will instruct the code to save or not to save variations increment.
+	 * For "Sharing Queue" display only, we do not need to save the incremented index.
+	 *
+	 * @since 8.5.2
+	 *
+	 * @var bool
+	 */
+	private $variation_increment = true;
 
 	/**
 	 * Stores the post format options if not false.
@@ -184,12 +193,14 @@ class Rop_Post_Format_Helper {
 				$new_index = $sequential_index + 1;
 				$count     = count( $custom_messages ) - 1;
 
-				if ( $new_index <= $count ) {
-					$sequential_account_index[ $this->account_id ] = $new_index;
-					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
-				} else {
-					unset( $sequential_account_index[ $this->account_id ] );
-					update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
+				if ( true === $this->variation_increment ) {
+					if ( $new_index <= $count ) {
+						$sequential_account_index[ $this->account_id ] = $new_index;
+						update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
+					} else {
+						unset( $sequential_account_index[ $this->account_id ] );
+						update_post_meta( $post_id, 'rop_variation_index', $sequential_account_index );
+					}
 				}
 			} else {
 				$messages_count = count( $custom_messages );
@@ -914,5 +925,18 @@ class Rop_Post_Format_Helper {
 		}
 
 		return $short_url;
+	}
+
+	/**
+	 * When fetching the queue we do not need to increment the variations.
+	 * We only need to display in queue what is the next item share.
+	 *
+	 * @since 8.5.2
+	 * @access public
+	 *
+	 * @param bool $increment_values true to save the incremented variation index.
+	 */
+	public function variation_increment_save_status( $increment_values = true ) {
+		$this->variation_increment = $increment_values;
 	}
 }
