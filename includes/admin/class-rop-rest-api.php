@@ -658,6 +658,7 @@ class Rop_Rest_Api {
 	 * @return array
 	 */
 	private function toggle_account( $data ) {
+
 		$model = new Rop_Services_Model();
 		if ( $data['state'] === 'active' ) {
 			$model->add_active_accounts( $data['account_id'] );

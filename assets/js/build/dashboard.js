@@ -35682,7 +35682,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\t.rop-remove-account[_v-0145bf0e]{\n\t\twidth:15px;\n\t\ttext-align: center;\n\t\tcursor: pointer;\n\t\theight: 100%;\n\t\t-ms-flex: 0 0 auto;\n\t\tline-height: 40px;\n\t\topacity: 1;\n\t\tmargin-left:0;\n\t\ttransition-timing-function: ease-in;\n\t\ttransition: 1s;\n\t\tz-index:9999;\n\t}\n\n", ""]);
+exports.push([module.i, "\n    .rop-remove-account[_v-0145bf0e] {\n        width: 15px;\n        text-align: center;\n        cursor: pointer;\n        height: 100%;\n        -ms-flex: 0 0 auto;\n        line-height: 40px;\n        opacity: 1;\n        margin-left: 0;\n        transition-timing-function: ease-in;\n        transition: 1s;\n        z-index: 9999;\n    }\n\n", ""]);
 
 // exports
 
@@ -35701,242 +35701,252 @@ var _vue2 = _interopRequireDefault(_vue);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-	name: 'service-user-tile',
-	props: ['account_data', 'account_id'],
-	data: function data() {
-		return {
-			/**
-    * Loading state used for showing animations.
-    */
-			is_loading: false,
-			labels: this.$store.state.labels.accounts,
-			upsell_link: ropApiSettings.upsell_link
-		};
-	},
-	computed: {
-		/**
-   * Check if the account is allowed to be activate.
-   * @returns {boolean}
-   */
-		checkDisabled: function checkDisabled() {
-			if (this.account_data.active) {
-				return false;
-			}
-			var available_services = this.$store.state.availableServices;
-			if (typeof available_services[this.account_data.service] === 'undefined') {
-				this.$log.info('No available service ', this.account_data.service);
-				return true;
-			}
-			if (available_services[this.account_data.service].active === false) {
-				this.$log.info('Service is not allowed', this.account_data.service);
-				return true;
-			}
-			var service_limit = available_services[this.account_data.service].allowed_accounts;
+    name: 'service-user-tile',
+    props: ['account_data', 'account_id'],
+    data: function data() {
+        return {
+            /**
+             * Loading state used for showing animations.
+             */
+            is_loading: false,
+            labels: this.$store.state.labels.accounts,
+            upsell_link: ropApiSettings.upsell_link
+        };
+    },
+    computed: {
+        /**
+         * Check if the account is allowed to be activate.
+         * @returns {boolean}
+         */
+        checkDisabled: function checkDisabled() {
+            if (this.account_data.active) {
+                return false;
+            }
+            var available_services = this.$store.state.availableServices;
+            if (typeof available_services[this.account_data.service] === 'undefined') {
+                this.$log.info('No available service ', this.account_data.service);
+                return true;
+            }
+            if (available_services[this.account_data.service].active === false) {
+                this.$log.info('Service is not allowed', this.account_data.service);
+                return true;
+            }
+            var service_limit = available_services[this.account_data.service].allowed_accounts;
 
-			var countActiveAccounts = 0;
-			for (var activeAccount in this.$store.state.activeAccounts) {
-				if (this.$store.state.activeAccounts[activeAccount].service === this.account_data.service) {
-					countActiveAccounts++;
-				}
-			}
-			this.$log.info('Service limit details ', this.account_data.service, service_limit, countActiveAccounts);
-			return service_limit <= countActiveAccounts;
-		},
-		/**
-   * Returns account type.
-   * @returns {string}
-   */
-		type: function type() {
-			return this.account_data.active === true ? 'active' : 'inactive';
-		},
-		/**
-   * Service class if we have an avatar image or not.
-   * @returns {module.exports.computed.service|module.exports.props.service|{type, required}|*}
-   */
-		service: function service() {
-			var iconClass = this.account_data.service;
-			if (this.img !== '') {
-				iconClass = iconClass.concat(' ').concat('has_image');
-			} else {
-				iconClass = iconClass.concat(' ').concat('no-image');
-			}
-			return iconClass;
-		},
-		/**
-   * Get service icon class.
-   * @returns {string}
-   */
-		icon: function icon() {
-			var serviceIcon = 'fa-';
-			if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
-			if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
-			if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
-			if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
-			if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
-			return serviceIcon;
-		},
-		/**
-   * Setup img to be used.
-   * @returns {string}
-   */
-		img: function img() {
-			var img = '';
-			if (this.account_data.img !== '' && this.account_data.img !== undefined) {
-				img = this.account_data.img;
-			}
-			return img;
-		},
-		/**
-   * Return account username.
-   */
-		user: function user() {
-			return this.account_data.user;
-		},
-		/**
-   * Return account info details.
-   * @returns {T[]}
-   */
-		serviceInfo: function serviceInfo() {
+            var countActiveAccounts = 0;
+            for (var activeAccount in this.$store.state.activeAccounts) {
+                if (this.$store.state.activeAccounts[activeAccount].service === this.account_data.service) {
+                    countActiveAccounts++;
+                }
+            }
+            this.$log.info('Service limit details ', this.account_data.service, service_limit, countActiveAccounts);
+            return service_limit <= countActiveAccounts;
+        },
+        /**
+         * Returns account type.
+         * @returns {string}
+         */
+        type: function type() {
+            return this.account_data.active === true ? 'active' : 'inactive';
+        },
+        /**
+         * Service class if we have an avatar image or not.
+         * @returns {module.exports.computed.service|module.exports.props.service|{type, required}|*}
+         */
+        service: function service() {
+            var iconClass = this.account_data.service;
+            if (this.img !== '') {
+                iconClass = iconClass.concat(' ').concat('has_image');
+            } else {
+                iconClass = iconClass.concat(' ').concat('no-image');
+            }
+            return iconClass;
+        },
+        /**
+         * Get service icon class.
+         * @returns {string}
+         */
+        icon: function icon() {
+            var serviceIcon = 'fa-';
+            if (this.account_data.service === 'facebook') serviceIcon = serviceIcon.concat('facebook');
+            if (this.account_data.service === 'twitter') serviceIcon = serviceIcon.concat('twitter');
+            if (this.account_data.service === 'linkedin') serviceIcon = serviceIcon.concat('linkedin');
+            if (this.account_data.service === 'tumblr') serviceIcon = serviceIcon.concat('tumblr');
+            if (this.account_data.service === 'pinterest') serviceIcon = serviceIcon.concat('pinterest');
+            return serviceIcon;
+        },
+        /**
+         * Setup img to be used.
+         * @returns {string}
+         */
+        img: function img() {
+            var img = '';
+            if (this.account_data.img !== '' && this.account_data.img !== undefined) {
+                img = this.account_data.img;
+            }
+            return img;
+        },
+        /**
+         * Return account username.
+         */
+        user: function user() {
+            return this.account_data.user;
+        },
+        /**
+         * Return account info details.
+         * @returns {T[]}
+         */
+        serviceInfo: function serviceInfo() {
 
-			return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created);
-		}
-	},
-	methods: {
-		/**
-  * Remove inactivate account.
-  *
-  * @param id Account to remove.
-  */
-		removeAccount: function removeAccount(id) {
-			var _this = this;
+            return this.account_data.account.concat(' ' + this.labels.at + ': ').concat(this.account_data.created);
+        }
+    },
+    methods: {
+        /**
+         * Remove inactivate account.
+         *
+         * @param id Account to remove.
+         */
+        removeAccount: function removeAccount(id) {
+            var _this = this;
 
-			_vue2.default.$log.info('Remove account', id);
-			if (this.is_loading) {
-				_vue2.default.$log.warn('Request in progress...Bail...', id);
-				return;
-			}
-			this.is_loading = true;
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'remove_account',
-				data: { account_id: id }
-			}).then(function (response) {
-				_this.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
-					_this.is_loading = false;
-				}, function (error) {
-					_this.is_loading = false;
-				});
-				// This needs to be run to reset the available services to make the social media auth buttons available again.
-				_this.$store.dispatch('fetchAJAXPromise', { req: 'get_available_services' }).then(function (response) {}, function (error) {
-					_vue2.default.$log.error('service-user-tile.vue => fetchAJAXPromise::get_available_services issue: ', error);
-				});
-				// get_available_services
-			}, function (error) {
-				_this.is_loading = false;
-				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
+            _vue2.default.$log.info('Remove account', id);
+            if (this.is_loading) {
+                _vue2.default.$log.warn('Request in progress...Bail...', id);
+                return;
+            }
+            this.is_loading = true;
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'remove_account',
+                data: { account_id: id }
+            }).then(function (response) {
+                _this.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
+                    _this.is_loading = false;
+                }, function (error) {
+                    _this.is_loading = false;
+                });
+                // This needs to be run to reset the available services to make the social media auth buttons available again.
+                _this.$store.dispatch('fetchAJAXPromise', { req: 'get_available_services' }).then(function (response) {}, function (error) {
+                    _vue2.default.$log.error('service-user-tile.vue => fetchAJAXPromise::get_available_services issue: ', error);
+                });
+                // get_available_services
+            }, function (error) {
+                _this.is_loading = false;
+                _vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
 
-		/**
-   * Toggle account state.
-   *
-   * @param id
-   * @param type
-   */
-		toggleAccount: function toggleAccount(id, type) {
-			var _this2 = this;
+        /**
+         * Toggle account state.
+         *
+         * @param id
+         * @param type
+         */
+        toggleAccount: function toggleAccount(id, type) {
+            var _this2 = this;
 
-			var parts = id.split('_');
-			if (parts.length !== 3) {
-				_vue2.default.$log.error('Invalid id format for active account ', id);
-				return;
-			}
-			var service_id = parts[0] + '_' + parts[1];
+            var parts = id.split('_');
+            var is_exception = false;
 
-			this.$store.state.authenticatedServices[service_id].available_accounts[id].active = type !== 'inactive';
-			this.$log.info("Before toggle ", this.$store.state.activeAccounts);
-			if (type === 'inactive') {
-				_vue2.default.delete(this.$store.state.activeAccounts, id);
-			} else {
-				_vue2.default.set(this.$store.state.activeAccounts, id, this.$store.state.authenticatedServices[service_id].available_accounts[id]);
-			}
-			this.$store.dispatch('fetchAJAXPromise', {
-				req: 'toggle_account',
-				data: { account_id: id, state: type }
-			}).then(function (response) {
-				_this2.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
-					_this2.is_loading = false;
-				}, function (error) {
-					_this2.is_loading = false;
-				});
-			}, function (error) {
-				_this2.is_loading = false;
-				_vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
-			});
-		},
-		/**
-   * Start toggle action.
-   * @param id
-   * @param type
-   */
-		startToggleAccount: function startToggleAccount(id, type) {
-			_vue2.default.$log.info('Toggle account', id, type);
-			if (this.is_loading) {
-				_vue2.default.$log.warn('Request in progress...Bail...', id, type);
-				return;
-			}
-			this.is_loading = true;
-			this.toggleAccount(id, type);
-		}
-	}
-	// </script>
-	// <style scoped>
-	// 	.rop-remove-account{
-	// 		width:15px;
-	// 		text-align: center;
-	// 		cursor: pointer;
-	// 		height: 100%;
-	// 		-ms-flex: 0 0 auto;
-	// 		line-height: 40px;
-	// 		opacity: 1;
-	// 		margin-left:0;
-	// 		transition-timing-function: ease-in;
-	// 		transition: 1s;
-	// 		z-index:9999;
-	// 	}
-	//
-	// </style>
-	//
+            if ('linkedin' === parts[0] && parts.length > 3) {
+                is_exception = true;
+            } else if (parts.length !== 3) {
+                _vue2.default.$log.error('Invalid id format for active account ', id);
+                return;
+            }
+            var service_id = '';
+
+            if (is_exception) {
+                service_id = parts[0] + '_' + parts[1] + '_' + parts[2];
+            } else {
+                service_id = parts[0] + '_' + parts[1];
+            }
+
+            this.$store.state.authenticatedServices[service_id].available_accounts[id].active = type !== 'inactive';
+            this.$log.info("Before toggle ", this.$store.state.activeAccounts);
+            if (type === 'inactive') {
+                _vue2.default.delete(this.$store.state.activeAccounts, id);
+            } else {
+                _vue2.default.set(this.$store.state.activeAccounts, id, this.$store.state.authenticatedServices[service_id].available_accounts[id]);
+            }
+            this.$store.dispatch('fetchAJAXPromise', {
+                req: 'toggle_account',
+                data: { account_id: id, state: type }
+            }).then(function (response) {
+                _this2.$store.dispatch('fetchAJAXPromise', { req: 'get_authenticated_services' }).then(function (response) {
+                    _this2.is_loading = false;
+                }, function (error) {
+                    _this2.is_loading = false;
+                });
+            }, function (error) {
+                _this2.is_loading = false;
+                _vue2.default.$log.error('Got nothing from server. Prompt user to check internet connection and try again', error);
+            });
+        },
+        /**
+         * Start toggle action.
+         * @param id
+         * @param type
+         */
+        startToggleAccount: function startToggleAccount(id, type) {
+            _vue2.default.$log.info('Toggle account', id, type);
+            if (this.is_loading) {
+                _vue2.default.$log.warn('Request in progress...Bail...', id, type);
+                return;
+            }
+            this.is_loading = true;
+            this.toggleAccount(id, type);
+        }
+    }
+    // </script>
+    // <style scoped>
+    //     .rop-remove-account {
+    //         width: 15px;
+    //         text-align: center;
+    //         cursor: pointer;
+    //         height: 100%;
+    //         -ms-flex: 0 0 auto;
+    //         line-height: 40px;
+    //         opacity: 1;
+    //         margin-left: 0;
+    //         transition-timing-function: ease-in;
+    //         transition: 1s;
+    //         z-index: 9999;
+    //     }
+    //
+    // </style>
+    //
 
 }; // <template>
-// 	<div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
+//     <div class="tile tile-centered rop-account" :class="'rop-'+type+'-account'">
 //
-// 		<div class="tile-icon">
-// 			<div class="icon_box" :class="service">
-// 				<img class="service_account_image" :src="img" v-if="img"/>
-// 				<i class="fa  " :class="icon" aria-hidden="true"></i>
-// 			</div>
-// 		</div>
-// 		<div class="tile-content">
-// 			<div class="tile-title">{{ user }}</div>
-// 			<div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
-// 		</div>
-// 		<div class="tile-action">
-// 			<div class="form-group">
-// 				<label class="form-switch">
-// 					<div class="ajax-loader "><i class="fa fa-spinner fa-spin" v-show="is_loading"></i></div>
-// 					<input :disabled="checkDisabled" type="checkbox" v-model="account_data.active"
-// 					       @change="startToggleAccount( account_id, type )"/>
-// 					<i class="form-icon"></i>
-// 				</label>
-// 			</div>
+//         <div class="tile-icon">
+//             <div class="icon_box" :class="service">
+//                 <img class="service_account_image" :src="img" v-if="img"/>
+//                 <i class="fa  " :class="icon" aria-hidden="true"></i>
+//             </div>
+//         </div>
+//         <div class="tile-content">
+//             <div class="tile-title">{{ user }}</div>
+//             <div class="tile-subtitle text-gray">{{ serviceInfo }}</div>
+//         </div>
+//         <div class="tile-action">
+//             <div class="form-group">
+//                 <label class="form-switch">
+//                     <div class="ajax-loader "><i class="fa fa-spinner fa-spin" v-show="is_loading"></i></div>
+//                     <input :disabled="checkDisabled" type="checkbox" v-model="account_data.active"
+//                            @change="startToggleAccount( account_id, type )"/>
+//                     <i class="form-icon"></i>
+//                 </label>
+//             </div>
 //
-//    		<div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) "  :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
-// 			<i class="fa fa-trash" v-if=" ! is_loading"></i>
-// 			<i class="fa fa-spinner fa-spin" v-else></i>
-// 		</div>
+//             <div class="tile-icon rop-remove-account tooltip tooltip-right" @click="removeAccount(account_id) " :data-tooltip="labels.remove_account" v-if=" ! account_data.active">
+//                 <i class="fa fa-trash" v-if=" ! is_loading"></i>
+//                 <i class="fa fa-spinner fa-spin" v-else></i>
+//             </div>
 //
-// 		</div>
-// 	</div>
+//         </div>
+//     </div>
 // </template>
 //
 // <script>
@@ -35945,7 +35955,7 @@ module.exports = {
 /* 231 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\t<div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0145bf0e=\"\">\n\n\t\t<div class=\"tile-icon\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"icon_box\" :class=\"service\" _v-0145bf0e=\"\">\n\t\t\t\t<img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0145bf0e=\"\">\n\t\t\t\t<i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0145bf0e=\"\"></i>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"tile-content\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"tile-title\" _v-0145bf0e=\"\">{{ user }}</div>\n\t\t\t<div class=\"tile-subtitle text-gray\" _v-0145bf0e=\"\">{{ serviceInfo }}</div>\n\t\t</div>\n\t\t<div class=\"tile-action\" _v-0145bf0e=\"\">\n\t\t\t<div class=\"form-group\" _v-0145bf0e=\"\">\n\t\t\t\t<label class=\"form-switch\" _v-0145bf0e=\"\">\n\t\t\t\t\t<div class=\"ajax-loader \" _v-0145bf0e=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0145bf0e=\"\"></i></div>\n\t\t\t\t\t<input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0145bf0e=\"\">\n\t\t\t\t\t<i class=\"form-icon\" _v-0145bf0e=\"\"></i>\n\t\t\t\t</label>\n\t\t\t</div>\n\n   \t\t<div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0145bf0e=\"\">\n\t\t\t<i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0145bf0e=\"\"></i>\n\t\t\t<i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0145bf0e=\"\"></i>\n\t\t</div>\n\n\t\t</div>\n\t</div>\n";
+module.exports = "\n    <div class=\"tile tile-centered rop-account\" :class=\"'rop-'+type+'-account'\" _v-0145bf0e=\"\">\n\n        <div class=\"tile-icon\" _v-0145bf0e=\"\">\n            <div class=\"icon_box\" :class=\"service\" _v-0145bf0e=\"\">\n                <img class=\"service_account_image\" :src=\"img\" v-if=\"img\" _v-0145bf0e=\"\">\n                <i class=\"fa  \" :class=\"icon\" aria-hidden=\"true\" _v-0145bf0e=\"\"></i>\n            </div>\n        </div>\n        <div class=\"tile-content\" _v-0145bf0e=\"\">\n            <div class=\"tile-title\" _v-0145bf0e=\"\">{{ user }}</div>\n            <div class=\"tile-subtitle text-gray\" _v-0145bf0e=\"\">{{ serviceInfo }}</div>\n        </div>\n        <div class=\"tile-action\" _v-0145bf0e=\"\">\n            <div class=\"form-group\" _v-0145bf0e=\"\">\n                <label class=\"form-switch\" _v-0145bf0e=\"\">\n                    <div class=\"ajax-loader \" _v-0145bf0e=\"\"><i class=\"fa fa-spinner fa-spin\" v-show=\"is_loading\" _v-0145bf0e=\"\"></i></div>\n                    <input :disabled=\"checkDisabled\" type=\"checkbox\" v-model=\"account_data.active\" @change=\"startToggleAccount( account_id, type )\" _v-0145bf0e=\"\">\n                    <i class=\"form-icon\" _v-0145bf0e=\"\"></i>\n                </label>\n            </div>\n\n            <div class=\"tile-icon rop-remove-account tooltip tooltip-right\" @click=\"removeAccount(account_id) \" :data-tooltip=\"labels.remove_account\" v-if=\" ! account_data.active\" _v-0145bf0e=\"\">\n                <i class=\"fa fa-trash\" v-if=\" ! is_loading\" _v-0145bf0e=\"\"></i>\n                <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-0145bf0e=\"\"></i>\n            </div>\n\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 232 */
