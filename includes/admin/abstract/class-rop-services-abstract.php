@@ -160,7 +160,7 @@ abstract class Rop_Services_Abstract {
 			if ( $authenticated ) {
 				$service = $this->get_service();
 
-				if ( 'linkedin' === $service['service'] ) {
+				if ( 'linkedin' === $service['service'] && 'pinterest' === $service['service'] ) {
 
 					/**
 					 * For LinkedIn, it seems they include '_' char into the service id and
@@ -276,9 +276,10 @@ abstract class Rop_Services_Abstract {
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
 
-			$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
-			if ( 'linkedin' === $this->get_service_id() ) {
+			if ( 'linkedin' === $this->get_service_id() && 'pinterest' === $this->get_service_id() ) {
 				$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
+			} else {
+				$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
 			}
 		}
 
@@ -299,7 +300,7 @@ abstract class Rop_Services_Abstract {
 		}
 
 
-		if ( 'linkedin' === $this->service_name ) {
+		if ( 'linkedin' === $this->service_name && 'pinterest' === $this->service_name ) {
 			return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
 		} else {
 			return $this->service_name . '_' . $service_details['id'];
@@ -527,7 +528,7 @@ abstract class Rop_Services_Abstract {
 				'message' => 'Our plugin might be having an issue posting tweets with an image to your account.',
 				'link'    => 'https://is.gd/fix_invalid_media',
 			),
-			'Callback URL not approved for this client application' => array(
+			'Callback URL not approved for this client application'      => array(
 				'message' => 'Your Callback URL for your Twitter app might not be correct.',
 				'link'    => 'https://is.gd/fix_oauth_callback_value',
 			),
@@ -538,7 +539,7 @@ abstract class Rop_Services_Abstract {
 				'link'    => 'https://is.gd/fix_link_issue',
 			),
 
-			'[ unauthorized_scope_error ] Scope "r_organization_social"' => array(
+			'[ unauthorized_scope_error ] Scope "r_organization_social"'                  => array(
 				'message' => 'You might need to reconnect your LinkedIn account. ',
 				'link'    => 'https://is.gd/linkedin_scope_error',
 			),
@@ -580,7 +581,7 @@ abstract class Rop_Services_Abstract {
 	 * Used where file_get_contents might not work with urls, we provide the file path.
 	 *
 	 * @param string $image_url Image url.
-	 * @param array  $mimetype Used to identify the mime type.
+	 * @param array $mimetype Used to identify the mime type.
 	 *
 	 * @return string Image path.
 	 */
@@ -728,7 +729,7 @@ abstract class Rop_Services_Abstract {
 	 * Treat the underscore exception.
 	 *
 	 * @param string $given_id Social media ID.
-	 * @param bool   $reverse replace underscore or put it back.
+	 * @param bool $reverse replace underscore or put it back.
 	 *
 	 * @return string|string[]
 	 * @since 8.5.3

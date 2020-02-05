@@ -257,7 +257,7 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 		);
 
 		$this->service = array(
-			'id'                 => $user->id,
+			'id'                 => $this->treat_underscore_exception( $user->id ),
 			'service'            => $this->service_name,
 			'credentials'        => $this->credentials,
 			'public_credentials' => array(
@@ -307,12 +307,21 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			)
 		);
 
-		$search  = array( ' ', '.', ',', '/', '!', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
+		$search  = array( ' ', '.', ',', '/', '@', '&', '#', '%', '*', '(', ')', '{', '}', '[', ']', '|', '\\', '$' );
 		$replace = array( '-', '' );
 
 		foreach ( $boards as $board ) {
+			// resetting vars
+			$board_name = '';
+			$username = '';
+
+			$board_name = str_replace( $search, $replace, $board->name );
+			$board_name = $this->treat_underscore_exception( $board_name );
+
+			$username = $this->treat_underscore_exception( $user->username );
+
 			$board_details            = array();
-			$board_details['id']      = $user->username . '/' . str_replace( $search, $replace, $board->name );
+			$board_details['id']      = $username . '/' . $board_name;
 			$board_details['account'] = $this->normalize_string( sprintf( '%s %s', $user->first_name, $user->last_name ) );
 			$board_details['user']    = $this->normalize_string( $board->name );
 			$board_details['active']  = false;
@@ -388,6 +397,10 @@ class Rop_Pinterest_Service extends Rop_Services_Abstract {
 			$this->credentials['app_id'],
 			$this->credentials['secret']
 		);
+
+		if ( isset( $args['id'] ) ) {
+			$args['id'] = $this->treat_underscore_exception( $args['id'], true );
+		}
 
 		$api = $this->get_api();
 		$api->auth->setOAuthToken( $args['credentials']['token'] );
