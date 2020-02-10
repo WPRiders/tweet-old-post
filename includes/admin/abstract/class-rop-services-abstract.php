@@ -160,7 +160,7 @@ abstract class Rop_Services_Abstract {
 			if ( $authenticated ) {
 				$service = $this->get_service();
 
-				if ( 'linkedin' === $service['service'] && 'pinterest' === $service['service'] ) {
+				if ( 'linkedin' === $service['service'] || 'pinterest' === $service['service'] ) {
 
 					/**
 					 * For LinkedIn, it seems they include '_' char into the service id and
@@ -276,7 +276,7 @@ abstract class Rop_Services_Abstract {
 		$accounts_ids    = array();
 		foreach ( $active_accounts as $account ) {
 
-			if ( 'linkedin' === $this->get_service_id() && 'pinterest' === $this->get_service_id() ) {
+			if ( 'linkedin' === $this->get_service_id() || 'pinterest' === $this->get_service_id() ) {
 				$accounts_ids[ $this->get_service_id() . '_' . $this->treat_underscore_exception( $account['id'] ) ] = $account;
 			} else {
 				$accounts_ids[ $this->get_service_id() . '_' . $account['id'] ] = $account;
@@ -300,7 +300,7 @@ abstract class Rop_Services_Abstract {
 		}
 
 
-		if ( 'linkedin' === $this->service_name && 'pinterest' === $this->service_name ) {
+		if ( 'linkedin' === $this->service_name || 'pinterest' === $this->service_name ) {
 			return $this->service_name . '_' . $this->treat_underscore_exception( $service_details['id'] );
 		} else {
 			return $this->service_name . '_' . $service_details['id'];

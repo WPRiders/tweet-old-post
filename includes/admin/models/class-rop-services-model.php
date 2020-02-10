@@ -165,7 +165,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			foreach ( $service_data['available_accounts'] as $account ) {
 				$key = $service_key . '_' . $account['id'];
 				// Linkedin Exception.
-				if ( 'linkedin' === $service_key && 'pinterest' === $service_key) {
+				if ( 'linkedin' === $service_key || 'pinterest' === $service_key) {
 					$key = $service_key . '_' . str_replace( '_', '!sp!', $account['id'] );
 				}
 
@@ -192,7 +192,7 @@ class Rop_Services_Model extends Rop_Model_Abstract {
 			}
 			foreach ( $service_details['available_accounts'] as $account ) {
 
-				if ( 'linkedin' === $service_details['service'] && 'pinterest' === $service_details['service'] ) {
+				if ( 'linkedin' === $service_details['service'] || 'pinterest' === $service_details['service'] ) {
 					$service_details_id = str_replace( '_', '!sp!', $service_details['id'] );
 					$account_id         = str_replace( '_', '!sp!', $account['id'] );
 				} else {
