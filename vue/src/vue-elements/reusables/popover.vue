@@ -60,6 +60,10 @@
 				type: Boolean,
 				default: true
 			},
+			post_selected: {
+				type: Boolean,
+				default: true
+			},
 			arrowWidth: {
 				type: Number,
 				default: 10
@@ -106,7 +110,7 @@
 				}
 			},
 			is_show( the_value ) {
-				console.log( 'the is show value : ' + the_value );
+				//console.log( 'the is show value : ' + the_value );
 			}
 		},
 		methods: {
@@ -256,7 +260,7 @@
 				return rect
 			},
 			show() {
-				if ( true == this.is_show ) {
+				if ( this.is_show && !this.post_selected ) {
 					if ( this.isShowing ) return
 					this.isShowing = true
 					this.tooltipEl.style.display = 'block'

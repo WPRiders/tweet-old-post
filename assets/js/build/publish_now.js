@@ -3766,17 +3766,7 @@ __vue_template__ = __webpack_require__(328)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/pro/publish-now.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 
@@ -15907,17 +15897,7 @@ __vue_template__ = __webpack_require__(76)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/button-checkbox.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 

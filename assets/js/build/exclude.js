@@ -16645,17 +16645,7 @@ __vue_template__ = __webpack_require__(71)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/multiple-select.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 /* 69 */
@@ -17115,17 +17105,7 @@ __vue_template__ = __webpack_require__(81)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/upsell-sidebar.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 /* 78 */
@@ -17496,17 +17476,7 @@ __vue_template__ = __webpack_require__(322)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/exclude-posts-page.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 /* 314 */
@@ -17638,7 +17608,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                         </label>
 //                     </div>
 //
-//                     <p class="text-primary rop-post-type-badge" v-if="apply_limit_exclude" v-html="labels.post_types_exclude_limit"></p>
+//                     <div v-if="apply_limit_exclude" style="text-align: center" class="column col-12 col-sm-12 vertical-align"><p class="text-primary rop-post-type-badge"
+//                                                                                                                                  v-html="labels.post_types_exclude_limit"></p></div>
 //                 </div>
 //                 <div class="column col-12  px-2" v-if="postsAvailable">
 //                     <div v-if="postsAvailable.length === 0 && !is_loading">
@@ -17649,7 +17620,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                             <tr v-for="(post,index ) in postsAvailable" class="rop-post-item">
 //                                 <td :class="'rop-post-' + post.selected">{{post.name}}
 //                                     <template>
-//                                         <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude">
+//                                         <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude" :post_selected="post.selected">
 //                                             <div slot="outlet">
 //                                                 <button class="btn btn-error rop-exclude-post"
 //                                                         @click="excludeSinglePost(post.value,post.selected)">
@@ -17699,7 +17670,7 @@ module.exports = {
 			is_loading: false,
 			is_loading_single: false,
 			is_taxonomy_message: false,
-			limit_exclude_posts: 3,
+			limit_exclude_posts: 30,
 			posts_selected_currently: 0,
 			apply_limit_exclude: false
 		};
@@ -17711,6 +17682,7 @@ module.exports = {
 		postsAvailable: function postsAvailable(val) {
 			this.has_pages = this.postsAvailable.length % 100 === 0;
 		}
+
 	},
 	computed: {
 		generalSettings: function generalSettings() {
@@ -18012,17 +17984,7 @@ __vue_template__ = __webpack_require__(321)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/mihaiirodiu/Local Sites/revivesocialpantheon/app/public/wp-content/plugins/tweet-old-post/vue/src/vue-elements/reusables/popover.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+
 
 /***/ }),
 /* 318 */
@@ -18136,6 +18098,10 @@ exports.default = {
 			type: Boolean,
 			default: true
 		},
+		post_selected: {
+			type: Boolean,
+			default: true
+		},
 		arrowWidth: {
 			type: Number,
 			default: 10
@@ -18182,7 +18148,7 @@ exports.default = {
 			}
 		},
 		is_show: function is_show(the_value) {
-			console.log('the is show value : ' + the_value);
+			//console.log( 'the is show value : ' + the_value );
 		}
 	},
 	methods: {
@@ -18332,7 +18298,7 @@ exports.default = {
 			return rect;
 		},
 		show: function show() {
-			if (true == this.is_show) {
+			if (this.is_show && !this.post_selected) {
 				if (this.isShowing) return;
 				this.isShowing = true;
 				this.tooltipEl.style.display = 'block';
@@ -18431,7 +18397,7 @@ module.exports = "\n    <div class=\"wpr-tooltip\">\n        <div class=\"outlet
 /* 322 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-5ea68056=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-5ea68056=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5ea68056=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-5ea68056=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-5ea68056=\"\">\n                <div class=\"column text-center\" _v-5ea68056=\"\">\n                    <p class=\"upsell\" _v-5ea68056=\"\"><i class=\"fa fa-lock\" _v-5ea68056=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-5ea68056=\"\">\n                    <div class=\"input-group\" _v-5ea68056=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5ea68056=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-5ea68056=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <div class=\"input-group has-icon-right\" _v-5ea68056=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-5ea68056=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-5ea68056=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-5ea68056=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-5ea68056=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-5ea68056=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-5ea68056=\"\">\n                        <label class=\"form-switch\" _v-5ea68056=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-5ea68056=\"\">\n                            <i class=\"form-icon\" _v-5ea68056=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n\n                    <p class=\"text-primary rop-post-type-badge\" v-if=\"apply_limit_exclude\" v-html=\"labels.post_types_exclude_limit\" _v-5ea68056=\"\"></p>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-5ea68056=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-5ea68056=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-5ea68056=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-5ea68056=\"\">\n                            <tbody _v-5ea68056=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-5ea68056=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-5ea68056=\"\">{{post.name}}\n                                    <template _v-5ea68056=\"\">\n                                        <tooltip placement=\"top-right\" mode=\"hover\" :is_show=\"apply_limit_exclude\" _v-5ea68056=\"\">\n                                            <div slot=\"outlet\" _v-5ea68056=\"\">\n                                                <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-5ea68056=\"\">\n                                                    <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                                    <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                                    <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-5ea68056=\"\"> </span>\n                                                </button>\n                                            </div>\n                                            <div slot=\"tooltip\" v-html=\"labels.post_types_exclude_limit_tooltip\" _v-5ea68056=\"\"></div>\n                                        </tooltip>\n                                    </template>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-5ea68056=\"\">\n                                <td class=\"rop-load-more-posts\" _v-5ea68056=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-5ea68056=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-5ea68056=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
+module.exports = "\n    <div id=\"rop_core\" class=\"columns \" _v-5ea68056=\"\">\n        <div id=\"rop-sidebar-selector\" class=\"column col-3   col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12  pull-right\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" :class=\"'rop-control-container-'+isPro\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align rop-control\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.post_types_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_post_types_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left rop-control\" _v-5ea68056=\"\">\n                    <multiple-select :options=\"postTypes\" :disabled=\"isPro\" :selected=\"generalSettings.selected_post_types\" :changed-selection=\"updatedPostTypes\" _v-5ea68056=\"\"></multiple-select>\n                </div>\n            </div>\n\n            <span class=\"divider\" _v-5ea68056=\"\"></span>\n            <div class=\"columns py-2\" v-if=\"!isPro\" _v-5ea68056=\"\">\n                <div class=\"column text-center\" _v-5ea68056=\"\">\n                    <p class=\"upsell\" _v-5ea68056=\"\"><i class=\"fa fa-lock\" _v-5ea68056=\"\"></i> {{labels.post_types_upsell}}</p>\n                </div>\n            </div>\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <b _v-5ea68056=\"\">{{labels.taxonomies_title}}</b>\n                    <p class=\"text-gray\" _v-5ea68056=\"\"> {{labels.filter_by_taxonomies_desc}}</p>\n                </div>\n                <div class=\"column col-12 col-sm-12 vertical-align text-left\" _v-5ea68056=\"\">\n                    <div class=\"input-group\" _v-5ea68056=\"\">\n                        <multiple-select :options=\"taxonomies\" :selected=\"generalSettings.selected_taxonomies\" :changed-selection=\"updatedTaxonomies\" _v-5ea68056=\"\"></multiple-select>\n\n                    </div>\n                </div>\n\n            </div>\n            <upsell-sidebar _v-5ea68056=\"\"></upsell-sidebar>\n        </div>\n        <div id=\"rop-posts-listing\" class=\"column col-9  col-xl-7 col-lg-7 col-md-6 col-sm-6 col-xs-12 col- pull-left\" _v-5ea68056=\"\">\n            <div class=\"columns py-2\" _v-5ea68056=\"\">\n                <div class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\">\n                    <div class=\"input-group has-icon-right\" _v-5ea68056=\"\">\n                        <input class=\"form-input\" type=\"text\" v-model=\"searchQuery\" :placeholder=\"labels.search_posts_to_exclude\" _v-5ea68056=\"\">\n                        <i class=\"form-icon loading\" v-if=\"is_loading\" _v-5ea68056=\"\"></i>\n                    </div>\n                </div>\n                <div class=\"column col-12 col-sm-12 mt-2\" _v-5ea68056=\"\">\n                    <div class=\"form-group pull-right\" v-if=\"searchQuery != '' &amp;&amp; ! show_excluded\" _v-5ea68056=\"\">\n                        <button class=\"btn btn-primary\" @click=\"excludePostsBatch\" _v-5ea68056=\"\">\n                            <i class=\"fa fa-save \" v-if=\"!this.is_loading\" _v-5ea68056=\"\"></i>\n                            <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                            {{labels.exclude_matching}} \"{{searchQuery}}\"\n                        </button>\n                    </div>\n                    <div class=\"form-group pull-right \" _v-5ea68056=\"\">\n                        <label class=\"form-switch\" _v-5ea68056=\"\">\n                            <input type=\"checkbox\" v-model=\"show_excluded\" @change=\"excludePostsChange\" _v-5ea68056=\"\">\n                            <i class=\"form-icon\" _v-5ea68056=\"\"></i>{{labels.search_posts_show_excluded}}\n                        </label>\n                    </div>\n\n                    <div v-if=\"apply_limit_exclude\" style=\"text-align: center\" class=\"column col-12 col-sm-12 vertical-align\" _v-5ea68056=\"\"><p class=\"text-primary rop-post-type-badge\" v-html=\"labels.post_types_exclude_limit\" _v-5ea68056=\"\"></p></div>\n                </div>\n                <div class=\"column col-12  px-2\" v-if=\"postsAvailable\" _v-5ea68056=\"\">\n                    <div v-if=\"postsAvailable.length === 0 &amp;&amp; !is_loading\" _v-5ea68056=\"\">\n                        {{labels.no_posts_found}}\n                    </div>\n                    <div v-else=\"\" _v-5ea68056=\"\">\n                        <table id=\"rop-posts-table\" class=\"table table-striped table-hover\" v-if=\" ! is_loading\" _v-5ea68056=\"\">\n                            <tbody _v-5ea68056=\"\"><tr v-for=\"(post,index ) in postsAvailable\" class=\"rop-post-item\" _v-5ea68056=\"\">\n                                <td :class=\"'rop-post-' + post.selected\" _v-5ea68056=\"\">{{post.name}}\n                                    <template _v-5ea68056=\"\">\n                                        <tooltip placement=\"top-right\" mode=\"hover\" :is_show=\"apply_limit_exclude\" :post_selected=\"post.selected\" _v-5ea68056=\"\">\n                                            <div slot=\"outlet\" _v-5ea68056=\"\">\n                                                <button class=\"btn btn-error rop-exclude-post\" @click=\"excludeSinglePost(post.value,post.selected)\" _v-5ea68056=\"\">\n                                                    <i class=\"fa\" :class=\"'fa-' + (post.selected ? 'plus' : 'remove') \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                                    <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                                    <span v-html=\" ( post.selected ? labels.include_single_post  : labels.exclude_single_post) \" _v-5ea68056=\"\"> </span>\n                                                </button>\n                                            </div>\n                                            <div slot=\"tooltip\" v-html=\"labels.post_types_exclude_limit_tooltip\" _v-5ea68056=\"\"></div>\n                                        </tooltip>\n                                    </template>\n                                </td>\n                            </tr>\n                            <tr v-if=\"has_pages\" _v-5ea68056=\"\">\n                                <td class=\"rop-load-more-posts\" _v-5ea68056=\"\">\n                                    <button class=\"btn btn-error\" @click=\"loadMorePosts()\" _v-5ea68056=\"\">\n                                        <i class=\"fa fa-newspaper-o \" v-if=\"!is_loading_single\" _v-5ea68056=\"\"></i>\n                                        <i class=\"fa fa-spinner fa-spin\" v-else=\"\" _v-5ea68056=\"\"></i>\n                                        {{labels.load_more_posts}}\n                                    </button>\n                                </td>\n                            </tr>\n                        </tbody></table>\n                        <div class=\"loading loading-lg\" v-else=\"\" _v-5ea68056=\"\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n";
 
 /***/ })
 /******/ ]);

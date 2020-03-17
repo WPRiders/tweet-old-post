@@ -61,7 +61,8 @@
                         </label>
                     </div>
 
-                    <p class="text-primary rop-post-type-badge" v-if="apply_limit_exclude" v-html="labels.post_types_exclude_limit"></p>
+                    <div v-if="apply_limit_exclude" style="text-align: center" class="column col-12 col-sm-12 vertical-align"><p class="text-primary rop-post-type-badge"
+                                                                                                                                 v-html="labels.post_types_exclude_limit"></p></div>
                 </div>
                 <div class="column col-12  px-2" v-if="postsAvailable">
                     <div v-if="postsAvailable.length === 0 && !is_loading">
@@ -72,7 +73,7 @@
                             <tr v-for="(post,index ) in postsAvailable" class="rop-post-item">
                                 <td :class="'rop-post-' + post.selected">{{post.name}}
                                     <template>
-                                        <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude">
+                                        <tooltip placement="top-right" mode="hover" :is_show="apply_limit_exclude" :post_selected="post.selected">
                                             <div slot="outlet">
                                                 <button class="btn btn-error rop-exclude-post"
                                                         @click="excludeSinglePost(post.value,post.selected)">
@@ -142,6 +143,7 @@
 			postsAvailable: function ( val ) {
 				this.has_pages = ( this.postsAvailable.length % 100 === 0 );
 			},
+
 		},
 		computed: {
 			generalSettings: function () {
